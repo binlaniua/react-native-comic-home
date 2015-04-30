@@ -1,33 +1,35 @@
-
-
 class Event {
-  constructor(){
-    this.listenerMap = {};
-  }
+	constructor() {
+		this.listenerMap = {};
+	}
 
-  emit(evt, data){
-    var o = this.listenerMap[evt] || [];
-    o.forEach((listener) => {
-      listener(data);
-    });
-  }
+	emit(evt, data) {
+		var o = this.listenerMap[evt] || [];
+		o.forEach((listener) => {
+			listener(data);
+		});
+	}
 
-  addListener(evt, listener){
-    var o = this.listenerMap[evt] || [];
-    o.push(listener);
-    this.listenerMap[evt] = o;
-  }
+	addListener(evt, listener) {
+		var o = this.listenerMap[evt] || [];
+		o.push(listener);
+		this.listenerMap[evt] = o;
+	}
 
-  removeListener(evt, listener){
+	removeListener(evt, listener) {
+		if (listener) {
 
-  }
+		} else {
+			delete this.listenerMap[evt];
+		}
+	}
 
-  destory(){
-    for(var k in this.listenerMap){
-      delete this.listenerMap[k];
-    }
-    this.listenerMap = [];
-  }
+	destory() {
+		for (var k in this.listenerMap) {
+			delete this.listenerMap[k];
+		}
+		this.listenerMap = [];
+	}
 }
 
 module.exports = Event;

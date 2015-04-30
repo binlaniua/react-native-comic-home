@@ -14,23 +14,26 @@ class ComicService extends Event {
   doCategory(url){
     Http.getSelect(url, {}, 'html/body/div/div/div[1]/div[2]/div[2]/ul:li')
         .then((doms) => {
-          debugger;
-          var r = [];
+          var result = [], r;
           for(var i = 0; i < doms.length; i++){
             var domP = Http.parseInternal(doms[i], 'p'),
                 domA = Http.parseInternal(domP, 'a'),
                 domCount = Http.parseInternal(domP, 'span[1]/a'),
                 domImg = Http.parseInternal(domA, 'img');
-
+            if(i % 2 == 0){
+              r = [];
+              result.push(r);
+            }
             r.push({
               icon: domImg.attribs.src,
               title: domA.children[3].data,
               url: domA.attribs.href,
-              count: domCount.children[0].data,
-              updateTime: domP.children[3].data.trim()
+              count: domCount.children[0].data.replace(/\[|\]/g, ''),
+              updateTime: domP.children[3].data.trim().replace('更新时间', '').replace(/:|：/g, ''),
+              auth: ''
             });
           }
-          this.emit('comicList', this.getComicList(r));
+          this.emit('comicList', this.getComicList(result));
         });
   }
 

@@ -55,7 +55,7 @@ var IndexView = React.createClass({
   },
 
   _onSitePress(rowData) {
-    this.props.navigator.push(Route.SiteIndex(rowData));
+    this.props.navigator.push(Route.Category(rowData));
   }
 
 });

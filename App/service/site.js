@@ -15,7 +15,7 @@ class SiteService {
     return [
       {
         title: '极速漫画',
-        component: require('../view/site/jisu/index'),
+        service: require('./site/jisu'),
         uri: 'http://css57.cnc.cdndm.com/blue/img/logo.png'
       },
       {

@@ -1,5 +1,6 @@
 var React = require('react-native'),
-  Css = require('../../../css/css');
+  Route = require('../../route/route'),
+  Css = require('../../css/css');
 
 var {
   Image,
@@ -16,18 +17,18 @@ var CategoryView = React.createClass({
   getInitialState() {
     this.comicService = this.props.comicService;
     return {
-      dataSource: this.comicService.getComicList()
+      dataSource: this.comicService.getCatagoryList()
     }
   },
 
   componentDidMount() {
-    this.comicService.addListener('comicList', this._onComicHandler.bind(this));
-    this.comicService.doCategory(this.props.url);
+    this.comicService.addListener('category', (data) => {this._onCategoryHandler(data)});
+    this.comicService.doCategoryList();
   },
 
-  componentDidUnMount() {
-    this.comicService.removeListener('comicList', this._onComicHandler);
-  },
+	componentWillUnmount() {
+		this.comicService.removeListener('category');
+	},
 
   render() {
     return (
@@ -56,14 +57,14 @@ var CategoryView = React.createClass({
     )
   },
 
-  _onComicHandler(data) {
+  _onCategoryHandler(data) {
     this.setState({
       dataSource: data
     });
   },
 
   _onCategoryPress(rowData) {
-
+    this.props.navigator.push(Route.ComicList(rowData, this.comicService));
   }
 
 });
