@@ -20,6 +20,10 @@ var styles = React.StyleSheet.create({
     flexDirection: 'column'
   },
 
+  flexItem: {
+    flex: 1
+  },
+
   vTop: {
     alignItems: 'flex-start'
   },

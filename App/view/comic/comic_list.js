@@ -37,6 +37,7 @@ var ComicListView = React.createClass({
     return (
       <View style={styles.listCell}>
         <ListView
+					renderHeader={this._renderHeader}
           dataSource={this.state.dataSource}
           renderRow={this._renderRow}
           >
@@ -47,8 +48,35 @@ var ComicListView = React.createClass({
 
   _loadMore() {
     this.pageIndex++;
-    this.comicService.doComicList(this.props.url, this.pageIndex);
+    this.comicService.doComicList(this.props.comic, this.pageIndex);
   },
+
+	_renderHeader(){
+		return (
+			<View style={[Css.flexRow]}>
+				<Image
+					style={styles.listHeaderImage}
+					resizeMode="stretch"
+					source={{uri: this.props.comic.icon}}
+					>
+				</Image>
+
+				<View style={[Css.flexColumn, Css.flexItem, {height: 240, paddingLeft: 8}]}>
+					<Text style={styles.listCellTxtBold}>状态:{'    '}
+						<Text style={styles.listCellTxt}>{this.props.comic.state}</Text>
+					</Text>
+
+					<Text style={styles.listCellTxtBold}>作者:{'    '}
+						<Text style={styles.listCellTxt}>{this.props.comic.auth}</Text>
+					</Text>
+
+					<Text style={styles.listCellTxtBold}>简介:{'    '}
+						<Text style={styles.listCellTxt}>{this.props.comic.info}</Text>
+					</Text>
+				</View>
+			</View>
+		);
+	},
 
   _renderFooter(){
     return (
@@ -63,17 +91,15 @@ var ComicListView = React.createClass({
       <View>
 
 				<View style={[styles.listCell]}>
-	        <TouchableHighlight underlayColor="#cff4ff" onPress={() => this._onCategoryPress(rowData)}>
-	          <View>
-	            <View style={[styles.listCellView]}>
-	              <Text style={styles.listCellTxtBold}>
-	                {rowData.title}
-	              </Text>
-	              <Text style={[styles.listCellTxt]}>
-	                {rowData.desc}
-	              </Text>
-	            </View>
-	          </View>
+	        <TouchableHighlight underlayColor="#cff4ff" onPress={() => this._onComicPress(rowData)}>
+            <View style={[styles.listCellView]}>
+              <Text style={styles.listCellTxtBold}>
+                {rowData.title}
+              </Text>
+              <Text>
+                {rowData.desc}
+              </Text>
+            </View>
 	        </TouchableHighlight>
 	      </View>
 
@@ -88,8 +114,7 @@ var ComicListView = React.createClass({
     });
   },
 
-  _onCategoryPress(rowData) {
-    this.props.navigator.push(Route.ComicList(rowData, this.comicService));
+  _onComicPress(rowData) {
   }
 
 });
@@ -107,6 +132,11 @@ var styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold'
   },
+	listHeaderImage: {
+		width: 180,
+		height: 240,
+		flex: 1
+	},
   listRow: {
     flex: 1,
     flexDirection: 'row',
@@ -114,8 +144,7 @@ var styles = StyleSheet.create({
   listCell: {
     flex: 1,
 		padding: 8,
-		height: 80,
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   listCellView: {
     flexDirection: 'row',
@@ -126,8 +155,10 @@ var styles = StyleSheet.create({
   listCellTxtBold: {
     fontWeight: 'bold'
   },
-  listCellTxt: {
-  }
+	listCellTxt: {
+		fontWeight: 'normal',
+		paddingLeft: 8
+	}
 });
 
 

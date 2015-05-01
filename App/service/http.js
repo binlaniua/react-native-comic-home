@@ -4,6 +4,9 @@ var Q = require('q'),
 class HttpClient {
 
 	static parseInternal(dom, select) {
+		if (!select) {
+			return dom;
+		}
 		if (dom.children) {
 			dom = dom.children;
 		}
