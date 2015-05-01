@@ -115,6 +115,7 @@ var ComicListView = React.createClass({
   },
 
   _onComicPress(rowData) {
+		this.props.navigator.push(Route.ComicImage(this.props.comic, rowData, this.comicService));
   }
 
 });

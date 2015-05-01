@@ -39,6 +39,18 @@ class Route {
 		}
 	}
 
+	static ComicImage(comic, vol, comicService) {
+		return {
+			component: require('../view/comic/comic_image'),
+			title: vol.title,
+			passProps: {
+				comic: comic,
+				vol: vol,
+				comicService: comicService
+			}
+		}
+	}
+
 }
 
 module.exports = Route;

@@ -12,6 +12,7 @@ class BaseSiteService extends Event {
     this.comicListDataSource = new React.ListView.DataSource({rowHasChanged: this._rowHasChanged});
     this.categoryComicList = [];
     this.comicList = [];
+    this.imageList = [];
   }
 
   doCategory(url, pageIndex){
@@ -21,6 +22,9 @@ class BaseSiteService extends Event {
   }
 
   doCategoryList() {
+  }
+
+  doImageList(url, pageIndex){
   }
 
   getCategoryComicList() {
@@ -35,13 +39,18 @@ class BaseSiteService extends Event {
     return this.comicListDataSource.cloneWithRows(this.comicList);
   }
 
+  resetImageList() {
+    this.imageList = [];
+  }
+
   resetCategory() {
     this.categoryComicList = [];
-    this.comicList = [];
+    this.resetComicList();
   }
 
   resetComicList() {
     this.comicList = [];
+    this.resetImageList();
   }
 
   _rowHasChanged(r1, r2) {
