@@ -9,12 +9,15 @@ class ComicService extends Event {
     super();
     this.categoryDataSource = new React.ListView.DataSource({rowHasChanged: this._rowHasChanged});
     this.comicListDataSource = new React.ListView.DataSource({rowHasChanged: this._rowHasChanged});
+    this.comicList = [];
   }
 
-  doCategory(url){
+  doCategory(url, pageIndex){
+    pageIndex++;
+    url = url.replace(/\/$/g, '-p' + pageIndex + '/');
     Http.getSelect(url, {}, 'html/body/div/div/div[1]/div[2]/div[2]/ul:li')
         .then((doms) => {
-          var result = [], r;
+          var r;
           for(var i = 0; i < doms.length; i++){
             var domP = Http.parseInternal(doms[i], 'p'),
                 domA = Http.parseInternal(domP, 'a'),
@@ -22,7 +25,7 @@ class ComicService extends Event {
                 domImg = Http.parseInternal(domA, 'img');
             if(i % 2 == 0){
               r = [];
-              result.push(r);
+              this.comicList.push(r);
             }
             r.push({
               icon: domImg.attribs.src,
@@ -33,7 +36,7 @@ class ComicService extends Event {
               auth: ''
             });
           }
-          this.emit('comicList', this.getComicList(result));
+          this.emit('comicList', this.getComicList());
         });
   }
 
@@ -54,16 +57,20 @@ class ComicService extends Event {
         });
   }
 
-  getComicList(data) {
-    return this.comicListDataSource.cloneWithRows(data || []);
+  getComicList() {
+    return this.comicListDataSource.cloneWithRows(this.comicList);
   }
 
   getCatagoryList(data) {
     return this.categoryDataSource.cloneWithRows(data || []);
   }
 
+  resetComicList() {
+    this.comicList = [];
+  }
+
   _rowHasChanged(r1, r2) {
-    return r1.name !== r2.name;
+    return r1.title !== r2.title;
   }
 }
 

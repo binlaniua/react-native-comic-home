@@ -7,7 +7,8 @@ var {
   ListView,
   View,
   Text,
-  TouchableHighlight
+  TouchableHighlight,
+  AlertIOS
 } = React;
 
 
@@ -15,6 +16,7 @@ var ComicListView = React.createClass({
 
   getInitialState() {
     this.comicService = this.props.comicService;
+    this.pageIndex = -1;
     return {
       dataSource: this.comicService.getComicList()
     }
@@ -22,20 +24,37 @@ var ComicListView = React.createClass({
 
   componentDidMount() {
     this.comicService.addListener('comicList', this._onComicHandler.bind(this));
-    this.comicService.doCategory(this.props.url);
+    this._loadMore();
   },
 
   componentDidUnmount() {
     this.comicService.removeListener('comicList');
+    this.comicService.resetComicList();
   },
 
   render() {
     return (
-      <ListView
-        dataSource={this.state.dataSource}
-        renderRow={this._renderRow}
-        >
-      </ListView>
+      <View style={styles.listCell}>
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={this._renderRow}
+          renderFooter={this._renderFooter}
+          >
+        </ListView>
+      </View>
+    );
+  },
+
+  _loadMore() {
+    this.pageIndex++;
+    this.comicService.doCategory(this.props.url, this.pageIndex);
+  },
+
+  _renderFooter(){
+    return (
+      <TouchableHighlight underlayColor="#cff4ff" style={[styles.btnMore]} onPress={this._loadMore.bind(this)}>
+        <Text style={styles.btnMoreText}>{'更多'}</Text>
+      </TouchableHighlight>
     );
   },
 
@@ -102,7 +121,20 @@ var ComicListView = React.createClass({
 });
 
 var styles = StyleSheet.create({
+  btnMore: {
+    backgroundColor: '#25b9e5',
+    height: 32,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  btnMoreText: {
+    color: '#ffffff',
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
   listRow: {
+    flex: 1,
     flexDirection: 'row',
   },
   listCell: {

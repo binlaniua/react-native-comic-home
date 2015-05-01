@@ -32,6 +32,10 @@ var styles = React.StyleSheet.create({
     justifyContent: 'flex-start'
   },
 
+  hCenter: {
+    justifyContent: 'center'
+  },
+
   hRight: {
     justifyContent: 'flex-end'
   },
