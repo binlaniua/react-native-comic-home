@@ -1,4 +1,5 @@
 var React = require('react-native'),
+  Route = require('../../route/route'),
   Css = require('../../css/css');
 
 var {
@@ -12,24 +13,24 @@ var {
 } = React;
 
 
-var ComicListView = React.createClass({
+var CategoryComicListView = React.createClass({
 
   getInitialState() {
     this.comicService = this.props.comicService;
     this.pageIndex = -1;
     return {
-      dataSource: this.comicService.getComicList()
+      dataSource: this.comicService.getCategoryComicList()
     }
   },
 
   componentDidMount() {
-    this.comicService.addListener('comicList', this._onComicHandler.bind(this));
+    this.comicService.addListener('categoryComicList', this._onComicHandler.bind(this));
     this._loadMore();
   },
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     this.comicService.removeListener('comicList');
-    this.comicService.resetComicList();
+    this.comicService.resetCategory();
   },
 
   render() {
@@ -115,7 +116,7 @@ var ComicListView = React.createClass({
   },
 
   _onCategoryPress(rowData) {
-
+    this.props.navigator.push(Route.ComicList(rowData, this.comicService));
   }
 
 });
@@ -159,4 +160,4 @@ var styles = StyleSheet.create({
 });
 
 
-module.exports = ComicListView;
+module.exports = CategoryComicListView;

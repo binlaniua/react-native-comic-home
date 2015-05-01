@@ -64,7 +64,7 @@ var CategoryView = React.createClass({
   },
 
   _onCategoryPress(rowData) {
-    this.props.navigator.push(Route.ComicList(rowData, this.comicService));
+    this.props.navigator.push(Route.CategoryComicList(rowData, this.comicService));
   }
 
 });

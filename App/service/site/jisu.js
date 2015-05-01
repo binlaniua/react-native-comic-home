@@ -8,7 +8,9 @@ class ComicService extends Event {
   constructor() {
     super();
     this.categoryDataSource = new React.ListView.DataSource({rowHasChanged: this._rowHasChanged});
+    this.categoryComicListDataSource = new React.ListView.DataSource({rowHasChanged: this._rowHasChanged});
     this.comicListDataSource = new React.ListView.DataSource({rowHasChanged: this._rowHasChanged});
+    this.categoryComicList = [];
     this.comicList = [];
   }
 
@@ -25,15 +27,31 @@ class ComicService extends Event {
                 domImg = Http.parseInternal(domA, 'img');
             if(i % 2 == 0){
               r = [];
-              this.comicList.push(r);
+              this.categoryComicList.push(r);
             }
             r.push({
               icon: domImg.attribs.src,
               title: domA.children[3].data,
-              url: domA.attribs.href,
+              url: 'http://www.1kkk.com' + domA.attribs.href,
               count: domCount.children[0].data.replace(/\[|\]/g, ''),
               updateTime: domP.children[3].data.trim().replace('更新时间', '').replace(/:|：/g, ''),
               auth: ''
+            });
+          }
+          this.emit('categoryComicList', this.getCategoryComicList());
+        });
+  }
+
+  doComicList(url){
+    debugger;
+    Http.getSelect(url, {}, 'html/body/div/div/div[1]/div[2]/div[4]/ul[3]:li')
+        .then((doms) => {
+          for(var i = 0; i < doms.length; i++){
+            var domA = Http.parseInternal(doms[i], 'a');
+            this.comicList.push({
+              title: domA.children[0].data,
+              url: 'http://www.1kkk.com' + domA.attribs.href,
+              desc: doms[i].children[1].data
             });
           }
           this.emit('comicList', this.getComicList());
@@ -57,12 +75,21 @@ class ComicService extends Event {
         });
   }
 
-  getComicList() {
-    return this.comicListDataSource.cloneWithRows(this.comicList);
+  getCategoryComicList() {
+    return this.categoryComicListDataSource.cloneWithRows(this.categoryComicList);
   }
 
   getCatagoryList(data) {
     return this.categoryDataSource.cloneWithRows(data || []);
+  }
+
+  getComicList() {
+    return this.comicListDataSource.cloneWithRows(this.comicList);
+  }
+
+  resetCategory() {
+    this.categoryComicList = [];
+    this.comicList = [];
   }
 
   resetComicList() {
