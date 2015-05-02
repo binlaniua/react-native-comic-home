@@ -4,4 +4,9 @@ react native comic reader
 ## 基于react-native的漫画阅读器
 用于抓取更大漫画网站的数据, 无后台, 纯前端抓取
 
-## 无
+## 注意
+由于修改了react-native的源代码, 所以把node-module也提交了
+
+## react-native 源代码修改处记录
+ * RCTImageDownloader.m 支持复杂的URL请求
+ * RCTCover.m 支持NSString -> NSURL的中文转换失败

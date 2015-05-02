@@ -11,6 +11,9 @@ class Route {
 		return {
 			component: require('../view/comic/category'),
 			title: siteInfo.title,
+			rightButtonTitle: '搜索',
+			onRightButtonPress: () => {
+			},
 			passProps: {
 				comicService: new siteInfo.service()
 			}
