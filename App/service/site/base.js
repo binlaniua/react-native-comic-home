@@ -25,6 +25,9 @@ class BaseSiteService extends Event {
   }
 
   doImageList(url, pageIndex){
+    if(pageIndex < this.imageList.length){
+      return this.imageList[pageIndex];
+    }
   }
 
   getCategoryComicList() {

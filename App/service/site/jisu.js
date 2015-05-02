@@ -10,20 +10,29 @@ class ComicService extends BaseSiteService {
   }
 
   doImageList(volUrl, pageIndex){
-    var cid = /-(\d+)\/$/.exec(volUrl)[1],
-        url = `${volUrl}chapterfun.ashx?cid=${cid}&page=${pageIndex + 1}&key=&maxcount=10`;
-    Http.getText(url, {}, {Referer: url})
-      .then((text) => {
-        var r = eval(text);
-        if(r){
-          var hasO = r[0].indexOf('?') != -1;
-          this.imageList.push(r[0] + (hasO ? '&' : '?') + `refer=${volUrl}`);
-        }
-        else{
-          console.error(url + '读取失败');
-        }
-        this.emit('imageList', this.imageList);
-      });
+    pageIndex = pageIndex < 0 ? 0 : pageIndex;
+    var imageUrl = super(volUrl, pageIndex);
+    if(imageUrl){
+      this.emit('imageList', imageUrl);
+    }
+    else{
+      var cid = /-(\d+)\/$/.exec(volUrl)[1],
+          url = `${volUrl}chapterfun.ashx?cid=${cid}&page=${pageIndex + 1}&key=&maxcount=10`;
+      Http.getText(url, {}, {Referer: url})
+        .then((text) => {
+          var r = eval(text);
+          if(r){
+            var hasO = r[0].indexOf('?') != -1;
+            imageUrl = r[0] + (hasO ? '&' : '?') + `refer=${volUrl}`;
+            this.imageList.push(imageUrl);
+            this.emit('imageList', imageUrl);
+          }
+          else{
+            console.error(url + '读取失败');
+          }
+
+        });
+    }
   }
 
   doCategory(url, pageIndex){
@@ -64,7 +73,13 @@ class ComicService extends BaseSiteService {
           comic.info = doms2[7].children[1].data;
 
           //读取多少话
-          var doms = Http.parseInternal(dom, 'html/body/div/div/div[1]/div[2]/div[4]/ul[3]:li');
+          var doms = [];
+          try{
+            doms = Http.parseInternal(dom, 'html/body/div/div/div[1]/div[2]/div[4]/ul[3]:li');
+          }
+          catch(e){
+            doms = Http.parseInternal(dom, 'html/body/div/div/div[1]/div[2]/div[4]/ul[2]:li');
+          }
           for(var i = 0; i < doms.length; i++){
             var domA = Http.parseInternal(doms[i], 'a');
             this.comicList.push({

@@ -19,7 +19,7 @@ var ComicImageView = React.createClass({
     this.comicService = this.props.comicService;
     this.pageIndex = -1;
     return {
-      dataSource: []
+      source: ''
     }
   },
 
@@ -27,9 +27,10 @@ var ComicImageView = React.createClass({
     //this.props.navigator.setHidden(true)
     StatusBarIOS.setHidden(true, StatusBarIOS.Animation.slide);
     this.imageWidth = Dimensions.get('window').width;
-    this.imageHeight = Dimensions.get('window').height;
+    this.btnWidth = this.imageWidth / 2;
+    this.imageHeight = Dimensions.get('window').height - 44;
     this.comicService.addListener('imageList', this._onComicHandler.bind(this));
-    this._loadMore();
+    this._loadMore(false);
   },
 
   componentWillUnmount() {
@@ -40,44 +41,42 @@ var ComicImageView = React.createClass({
   },
 
   render() {
-    var imageViews = this.state.dataSource.map((rowData) => this._renderRow(rowData));
     return (
-      <ScrollView
-        ref="scrollView"
-        horizontal={true}
-        paginEnabled={true}
-        contentInset={{top: 0}}
-        onScroll={() => { console.log('onScroll!'); }}
-        style={{}}
-        >
+      <View>
 
-        {imageViews}
-
-     </ScrollView>
-    );
-  },
-
-  _renderRow(rowData) {
-    return (
-      <View style={{backgroundColor: '#ff0000'}}>
         <Image
+            ref="imageView"
             resizeMode="stretch"
-            style={[{flex:1, width: this.imageWidth, height: this.imageHeight}]}
-            source={{uri: rowData}}
+            style={[styles.image, {width: this.imageWidth, height: this.imageHeight}]}
+            source={{uri: this.state.source}}
             >
         </Image>
-      </View>
+
+
+        <TouchableHighlight underlayColor="rgba(210, 247, 255, 0)" style={[styles.leftBtn, {width: this.btnWidth, height: this.imageHeight}]} onPress={() => this._loadMore(true)}>
+          <Text></Text>
+        </TouchableHighlight>
+
+        <TouchableHighlight underlayColor="rgba(210, 247, 255, 0)" style={[styles.rightBtn, {width: this.btnWidth, height: this.imageHeight}]} onPress={() => this._loadMore(false)}>
+          <Text></Text>
+        </TouchableHighlight>
+     </View>
     );
   },
 
-  _loadMore() {
-    this.pageIndex++;
-    this.comicService.doImageList(this.props.vol.url, this.pageIndex);
+  _loadMore(isPre) {
+    if(!this.state.isLoadding){
+      this.state.isLoading = true;
+      this.pageIndex = this.pageIndex + (isPre ? -1 : 1);
+      this.comicService.doImageList(this.props.vol.url, this.pageIndex);
+      console.error(`下一页${this.pageIndex}`);
+    }
   },
 
-  _onComicHandler(data) {
+  _onComicHandler(imageUrl) {
     this.setState({
-      dataSource: data
+      source: imageUrl,
+      isLoading: false
     });
   },
 
@@ -87,6 +86,23 @@ var ComicImageView = React.createClass({
 });
 
 var styles = StyleSheet.create({
+  image: {
+    position: 'absolute',
+    left: 0,
+    top: 44
+  },
+  leftBtn: {
+    //backgroundColor: '#ff0000',
+    position: 'absolute',
+    left: 0,
+    top: 44
+  },
+  rightBtn: {
+    //backgroundColor: '#00ff00',
+    position: 'absolute',
+    right: 0,
+    top: 44
+  }
 });
 
 
