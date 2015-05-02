@@ -16,32 +16,21 @@ var {
 var CategoryComicListView = React.createClass({
 
   getInitialState() {
-    this.comicService = this.props.comicService;
-    this.pageIndex = -1;
-    return {
-      dataSource: this.comicService.getCategoryComicList()
-    }
+    return {};
   },
 
   componentDidMount() {
-    this.comicService.addListener('categoryComicList', (data) => this._onComicHandler(data));
-    this._loadMore();
+
   },
 
   componentWillUnmount() {
-    this.comicService.removeListener('comicList');
-    this.comicService.resetCategory();
+
   },
 
   render() {
     return (
       <View style={styles.listCell}>
-        <ListView
-          dataSource={this.state.dataSource}
-          renderRow={this._renderRow}
-          renderFooter={this._renderFooter}
-          >
-        </ListView>
+
       </View>
     );
   },
@@ -53,7 +42,7 @@ var CategoryComicListView = React.createClass({
 
   _renderFooter(){
     return (
-      <TouchableHighlight underlayColor="#cff4ff" style={[styles.btnMore]} onPress={() => this._loadMore()}>
+      <TouchableHighlight underlayColor="#cff4ff" style={[styles.btnMore]} onPress={this._loadMore.bind(this)}>
         <Text style={styles.btnMoreText}>{'更多'}</Text>
       </TouchableHighlight>
     );
@@ -75,9 +64,6 @@ var CategoryComicListView = React.createClass({
   },
 
   _renderCell(rowData, isLeft) {
-    if(!rowData){
-      return (<View></View>);
-    }
     return (
       <View style={[styles.listCell]}>
         <TouchableHighlight style={isLeft ? Css.paddingLeft : Css.paddingRight} underlayColor="#cff4ff" onPress={() => this._onCategoryPress(rowData)}>
@@ -99,10 +85,10 @@ var CategoryComicListView = React.createClass({
 
             <View style={[styles.listCellView]}>
               <Text style={styles.listCellTxt}>
-                {rowData.updateTime}
+                {rowData.auth}
               </Text>
               <Text style={[styles.listCellTxt]}>
-                {rowData.auth}
+                {rowData.updateTime}
               </Text>
             </View>
           </View>

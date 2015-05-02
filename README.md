@@ -10,3 +10,4 @@ react native comic reader
 ## react-native 源代码修改处记录
  * RCTImageDownloader.m 支持复杂的URL请求
  * RCTCover.m 支持NSString -> NSURL的中文转换失败
+ * RCTDataManager.m 支持GBK页面

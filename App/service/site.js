@@ -20,7 +20,7 @@ class SiteService {
       },
       {
         title: 'KuKu漫画',
-        site: '',
+        service: require('./site/kuku'),
         uri: 'http://comic.kukudm.com/images/logo.gif'
       },
       {

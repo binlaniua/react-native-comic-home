@@ -7,15 +7,27 @@ class Route {
 		}
 	}
 
-	static Category(siteInfo) {
+	static Search(comicService) {
+		return {
+			component: require('../view/comic/search'),
+			title: '搜索',
+			passProps: {
+				comicService: comicService
+			}
+		}
+	}
+
+	static Category(siteInfo, navigator) {
+		var comicService = new siteInfo.service();
 		return {
 			component: require('../view/comic/category'),
 			title: siteInfo.title,
 			rightButtonTitle: '搜索',
 			onRightButtonPress: () => {
+				navigator.push(Route.Search(comicService));
 			},
 			passProps: {
-				comicService: new siteInfo.service()
+				comicService: comicService
 			}
 		}
 	}

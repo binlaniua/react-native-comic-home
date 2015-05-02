@@ -91,7 +91,9 @@ class HttpClient {
 }
 
 var defaultHeader = {
-		'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
+		'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36',
+		'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+		'Accept-Encoding': ''
 	},
 	exec = function(method, url, data, header) {
 		data = data || [];
@@ -123,6 +125,8 @@ var defaultHeader = {
 			method: method,
 			headers: header,
 			body: method == 'POST' ? body : ''
+		}).catch((e) => {
+			console.error(e);
 		});
 	};
 
