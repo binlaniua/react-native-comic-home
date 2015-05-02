@@ -8,6 +8,7 @@ class ComicService extends BaseSiteService {
   constructor() {
     super();
     this.baseUrl = 'http://comic2.kukudm.com';
+    this.baseImageUrl = 'http://n.kukudm.com/';
     this.otherComicList = [];
   }
 
@@ -18,21 +19,19 @@ class ComicService extends BaseSiteService {
       this.emit('imageList', imageUrl);
     }
     else{
-      var cid = /-(\d+)\/$/.exec(volUrl)[1],
-          url = `${volUrl}chapterfun.ashx?cid=${cid}&page=${pageIndex + 1}&key=&maxcount=10`;
-      Http.getText(url, {}, {Referer: url})
+      pageIndex++;
+      var url = volUrl.replace(/\d+\.htm$/, `${pageIndex}.htm`);
+      Http.getText(url, {}, {Referer: volUrl})
         .then((text) => {
-          var r = eval(text);
-          if(r){
-            var hasO = r[0].indexOf('?') != -1;
-            imageUrl = r[0] + (hasO ? '&' : '?') + `refer=${volUrl}`;
+          var m = /IMG\s+SRC='"[^"]+"([^']+)'/.exec(text);
+          if(m){
+            imageUrl = this.baseImageUrl + m[1];
             this.imageList.push(imageUrl);
             this.emit('imageList', imageUrl);
           }
           else{
-            console.error(url + '读取失败');
+            console.error(`${url}加载失败`);
           }
-
         });
     }
   }
@@ -81,25 +80,23 @@ class ComicService extends BaseSiteService {
     Http.getSelect(comic.url, {})
         .then((dom) => {
           //读取状态，作者，简介
-          var doms2 = Http.parseInternal(dom, '/html/body/div/div/div[1]/div[2]/div[1]/div[2]/ul:li');
-          comic.state = doms2[1].children[1].children[0].data;
-          comic.auth = doms2[2].children[1].children[0].data;
-          comic.info = doms2[7].children[1].data;
+          var domTrs = Http.parseInternal(dom, 'html/body/table[5]/tr/td[2]/table/tr[1]/td/table:tr'),
+              domTdOther = Http.parseInternal(domTrs[4], 'td'),
+              domTdInfo = Http.parseInternal(domTrs[2], 'td');
+          var other = domTdOther.children[0].data.split('|');
+          comic.state = other[1].split('：')[1];
+          comic.auth = other[1].split('：')[1];
+          comic.info = domTdInfo.children[1].children[0].data;
 
           //读取多少话
-          var doms = [];
-          try{
-            doms = Http.parseInternal(dom, 'html/body/div/div/div[1]/div[2]/div[4]/ul[3]:li');
-          }
-          catch(e){
-            doms = Http.parseInternal(dom, 'html/body/div/div/div[1]/div[2]/div[4]/ul[2]:li');
-          }
+          var doms = Http.parseInternal(dom, 'html/body/table[5]/tr/td[2]/table/tr[1]/td/table/tr[6]/td/dl:dd');
           for(var i = 0; i < doms.length; i++){
-            var domA = Http.parseInternal(doms[i], 'a');
+            var domA = Http.parseInternal(doms[i], 'a'),
+                comicInfo = domA.children[0].data.split(/\s+/);
             this.comicList.push({
-              title: domA.children[0].data,
-              url: 'http://www.1kkk.com' + domA.attribs.href,
-              desc: doms[i].children[1].data
+              title: comicInfo[comicInfo.length - 1],
+              url: this.baseUrl + domA.attribs.href,
+              desc: ''
             });
           }
           this.emit('comicList', this.getComicList());

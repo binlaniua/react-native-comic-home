@@ -69,7 +69,7 @@ var ComicImageView = React.createClass({
       this.state.isLoading = true;
       this.pageIndex = this.pageIndex + (isPre ? -1 : 1);
       this.comicService.doImageList(this.props.vol.url, this.pageIndex);
-      console.error(`下一页${this.pageIndex}`);
+      //console.error(`下一页${this.pageIndex}`);
     }
   },
 
