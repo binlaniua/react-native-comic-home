@@ -11,3 +11,4 @@ react native comic reader
  * RCTImageDownloader.m 支持复杂的URL请求
  * RCTCover.m 支持NSString -> NSURL的中文转换失败
  * RCTDataManager.m 支持GBK页面
+ * RCTNetworkImageView.m, RCTNetworkImageView.m, image.ios.js 支持onLoadError, onLoadFinish事件
