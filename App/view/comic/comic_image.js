@@ -8,6 +8,7 @@ var {
   ScrollView,
   View,
   Text,
+  Animation,
   TouchableHighlight,
   StatusBarIOS
 } = React;
@@ -49,6 +50,10 @@ var ComicImageView = React.createClass({
             resizeMode="stretch"
             style={[styles.image, {width: this.imageWidth, height: this.imageHeight}]}
             source={{uri: this.state.source}}
+            onLoadingFinish={(event) => {
+              this.isLoadding = false;
+            }}
+
             >
         </Image>
 
@@ -65,8 +70,8 @@ var ComicImageView = React.createClass({
   },
 
   _loadMore(isPre) {
-    if(!this.state.isLoadding){
-      this.state.isLoading = true;
+    if(!this.isLoadding){
+      this.isLoading = true;
       this.pageIndex = this.pageIndex + (isPre ? -1 : 1);
       this.comicService.doImageList(this.props.vol.url, this.pageIndex);
       //console.error(`下一页${this.pageIndex}`);
@@ -75,8 +80,7 @@ var ComicImageView = React.createClass({
 
   _onComicHandler(imageUrl) {
     this.setState({
-      source: imageUrl,
-      isLoading: false
+      source: imageUrl
     });
   },
 
