@@ -9,14 +9,15 @@ class ComicService extends BaseSiteService {
     super();
   }
 
-  doImageList(url, pageIndex){
-    var cid = /ch\d+-([^\/]+)/.exec(url)[1],
-        url = `${url}chapterfun.ashx?cid=${cid}&page=${pageIndex + 1}&key=&maxcount=10`;
+  doImageList(volUrl, pageIndex){
+    var cid = /-(\d+)\/$/.exec(volUrl)[1],
+        url = `${volUrl}chapterfun.ashx?cid=${cid}&page=${pageIndex + 1}&key=&maxcount=10`;
     Http.getText(url, {}, {Referer: url})
       .then((text) => {
         var r = eval(text);
         if(r){
-          this.imageList.push(r[0]);
+          var hasO = r[0].indexOf('?') != -1;
+          this.imageList.push(r[0] + (hasO ? '&' : '?') + `refer=${volUrl}`);
         }
         else{
           console.error(url + '读取失败');
