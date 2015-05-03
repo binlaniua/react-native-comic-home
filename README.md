@@ -14,9 +14,9 @@ react native comic reader
  * RCTNetworkImageView.m, RCTNetworkImageView.m, image.ios.js 支持onLoadError, onLoadFinish事件
 
 ## 截图
-![image](https://github.com/binlaniua/react-native-comic-home/raw/master/doc/1.jpg)
-![image](https://github.com/binlaniua/react-native-comic-home/raw/master/doc/2.jpg)
-![image](https://github.com/binlaniua/react-native-comic-home/raw/master/doc/3.jpg)
-![image](https://github.com/binlaniua/react-native-comic-home/raw/master/doc/4.jpg)
-![image](https://github.com/binlaniua/react-native-comic-home/raw/master/doc/5.jpg)
-![image](https://github.com/binlaniua/react-native-comic-home/raw/master/doc/6.jpg)
+![image](https://raw.githubusercontent.com/binlaniua/react-native-comic-home/master/doc/1.png)
+![image](https://raw.githubusercontent.com/binlaniua/react-native-comic-home/master/doc/2.png)
+![image](https://raw.githubusercontent.com/binlaniua/react-native-comic-home/master/doc/3.png)
+![image](https://raw.githubusercontent.com/binlaniua/react-native-comic-home/master/doc/4.png)
+![image](https://raw.githubusercontent.com/binlaniua/react-native-comic-home/master/doc/5.png)
+![image](https://raw.githubusercontent.com/binlaniua/react-native-comic-home/master/doc/6.png)
