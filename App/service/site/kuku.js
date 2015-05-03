@@ -16,7 +16,7 @@ class ComicService extends BaseSiteService {
     pageIndex = pageIndex < 0 ? 0 : pageIndex;
     var imageUrl = super(volUrl, pageIndex);
     if(imageUrl){
-      this.emit('imageList', imageUrl);
+      this.emit('imageList', {i: pageIndex, u: imageUrl});
     }
     else{
       pageIndex++;
@@ -27,7 +27,7 @@ class ComicService extends BaseSiteService {
           if(m){
             imageUrl = this.baseImageUrl + m[1];
             this.imageList.push(imageUrl);
-            this.emit('imageList', imageUrl);
+            this.emit('imageList', {i: --pageIndex, u: imageUrl});
           }
           else{
             console.error(`${url}加载失败`);

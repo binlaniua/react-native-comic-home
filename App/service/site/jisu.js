@@ -13,7 +13,7 @@ class ComicService extends BaseSiteService {
     pageIndex = pageIndex < 0 ? 0 : pageIndex;
     var imageUrl = super(volUrl, pageIndex);
     if(imageUrl){
-      this.emit('imageList', imageUrl);
+      this.emit('imageList', {i: pageIndex, u: imageUrl});
     }
     else{
       var cid = /-(\d+)\/$/.exec(volUrl)[1],
@@ -25,7 +25,7 @@ class ComicService extends BaseSiteService {
             var hasO = r[0].indexOf('?') != -1;
             imageUrl = r[0] + (hasO ? '&' : '?') + `refer=${volUrl}`;
             this.imageList.push(imageUrl);
-            this.emit('imageList', imageUrl);
+            this.emit('imageList', {i: pageIndex, u: imageUrl});
           }
           else{
             console.error(url + '读取失败');
