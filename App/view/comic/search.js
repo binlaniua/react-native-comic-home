@@ -102,21 +102,21 @@ var CategoryComicListView = React.createClass({
 						<Text style={styles.listCellTxt}>{rowData.title}</Text>
 					</Text>
 
-          <Text style={styles.listCellTxtBold}>分类:{'    '}
+          {rowData.category ? <Text style={styles.listCellTxtBold}>分类:{'    '}
 						<Text style={styles.listCellTxt}>{rowData.category.title}</Text>
-					</Text>
+					</Text> : null}
 
-					<Text style={styles.listCellTxtBold}>作者:{'    '}
+					{rowData.auth ? <Text style={styles.listCellTxtBold}>作者:{'    '}
 						<Text style={styles.listCellTxt}>{rowData.auth}</Text>
-					</Text>
+					</Text> : null}
 
-					<Text style={styles.listCellTxtBold}>最新:{'    '}
+					{rowData.count ? <Text style={styles.listCellTxtBold}>最新:{'    '}
 						<Text style={styles.listCellTxt}>{rowData.count}</Text>
-					</Text>
+					</Text> : null}
 
-          <Text style={styles.listCellTxtBold}>日期:{'    '}
+          {rowData.updateTime ? <Text style={styles.listCellTxtBold}>日期:{'    '}
 						<Text style={styles.listCellTxt}>{rowData.updateTime}</Text>
-					</Text>
+					</Text> : null}
         </View>
       </View>
     );

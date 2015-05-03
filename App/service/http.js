@@ -116,8 +116,8 @@ var defaultHeader = {
 		}
 
 		//
-		if (method == 'GET') {
-			url = url + (url.indexOf('?') == -1 ? '' : '?') + body;
+		if (method == 'GET' && body) {
+			url = url + (url.indexOf('?') == -1 ? '?' : '&') + body;
 		}
 
 		//

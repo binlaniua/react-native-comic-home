@@ -12,6 +12,27 @@ class ComicService extends BaseSiteService {
     this.otherComicList = [];
   }
 
+  doSearch(keyword, pageIndex) {
+    pageIndex++;
+    var url = `http://so.kukudm.com/search.asp?page=${pageIndex}&kw=${keyword}`;
+    Http.getSelect(url, {}, 'html/body/table[3]/tr/td/table/tr/td/dl:dd')
+      .then((doms) => {
+        for(var i = 0; i < doms.length; i++){
+          var domDD = doms[i],
+              domA = Http.parseInternal(domDD, ':a'),
+              domImg = Http.parseInternal(domA[0], 'img'),
+              title = domA[1].children[0].data;
+          var comic = {
+            title: title.substring(0, title.length - 2),
+            url: domA[1].attribs.href,
+            icon: domImg.attribs.src
+          };
+          this.searchList.push(comic);
+        }
+        this.emit('search', this.getSearchList());
+      });
+  }
+
   doImageList(volUrl, pageIndex){
     pageIndex = pageIndex < 0 ? 0 : pageIndex;
     var imageUrl = super(volUrl, pageIndex);

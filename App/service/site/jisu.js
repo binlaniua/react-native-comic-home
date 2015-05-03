@@ -26,7 +26,8 @@ class ComicService extends BaseSiteService {
               domUpdateTtime = domLis[4];
 
           //
-          var domTitle = Http.parseInternal(domLiTitleContainer, 'a').children,
+          var domTitleA = Http.parseInternal(domLiTitleContainer, 'a'),
+              domTitle = domTitleA.children,
               domCount = Http.parseInternal(domLiTitleContainer, 'span');
 
           //
@@ -44,6 +45,7 @@ class ComicService extends BaseSiteService {
           var comic = {
             title: title,
             icon: domLiImage.attribs.src,
+            url: domTitleA.attribs.href,
             auth: domLiAuth.children[1].children[0].data,
             updateTime: domUpdateTtime.children[0].children[0].data,
             count: domCount.children[1].children[0].data.replace(/\s+/g, ''),
@@ -53,8 +55,8 @@ class ComicService extends BaseSiteService {
             }
           };
           this.searchList.push(comic);
-          this.emit('search', this.getSearchList());
         }
+        this.emit('search', this.getSearchList());
       });
   }
 
