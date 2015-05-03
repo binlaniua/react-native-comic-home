@@ -6,7 +6,56 @@ var React = require('react-native'),
 class ComicService extends BaseSiteService {
 
   constructor() {
+    this.baseUrl = 'http://www.1kkk.com/';
     super();
+  }
+
+  doSearch(keyword, pageIndex){
+    pageIndex++;
+    var url = `http://www.1kkk.com/search?page=${pageIndex}&title=${keyword}&language=1`;
+    Http.getSelect(url, {}, 'html/body/div/div/div[1]/div[2]/div[2]/div:ul')
+      .then((doms) => {
+        for(var i = 1; i < doms.length; i++){
+          var domUl = doms[i],
+              domLis = Http.parseInternal(domUl, ':li'),
+              domLiComic = domLis[0],
+              domLiImage = Http.parseInternal(domLiComic, 'dl/dt/img'),
+              domLiTitleContainer = Http.parseInternal(domLiComic, 'dl/dd/span'),
+              domLiAuth = domLis[1],
+              domLiCategory = domLis[2],
+              domUpdateTtime = domLis[4];
+
+          //
+          var domTitle = Http.parseInternal(domLiTitleContainer, 'a').children,
+              domCount = Http.parseInternal(domLiTitleContainer, 'span');
+
+          //
+          var title = '';
+          for(var j = 0; j < domTitle.length; j++){
+            if(domTitle[j].name){
+              title += domTitle[j].children[0].data;
+            }
+            else{
+              title += domTitle[j].data;
+            }
+          }
+
+          //
+          var comic = {
+            title: title,
+            icon: domLiImage.attribs.src,
+            auth: domLiAuth.children[1].children[0].data,
+            updateTime: domUpdateTtime.children[0].children[0].data,
+            count: domCount.children[1].children[0].data.replace(/\s+/g, ''),
+            category: {
+              title: domLiCategory.children[1].children[0].data,
+              url: this.baseUrl + domLiCategory.children[1].attribs.href
+            }
+          };
+          this.searchList.push(comic);
+          this.emit('search', this.getSearchList());
+        }
+      });
   }
 
   doImageList(volUrl, pageIndex){

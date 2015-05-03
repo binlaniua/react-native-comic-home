@@ -115,19 +115,19 @@ var ComicImageView = React.createClass({
 var styles = StyleSheet.create({
   image: {
     position: 'absolute',
-    top: 44
+    top: 64
   },
   leftBtn: {
     //backgroundColor: '#ff0000',
     position: 'absolute',
     left: 0,
-    top: 44
+    top: 64
   },
   rightBtn: {
     //backgroundColor: '#00ff00',
     position: 'absolute',
     right: 0,
-    top: 44
+    top: 64
   }
 });
 

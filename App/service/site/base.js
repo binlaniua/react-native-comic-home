@@ -10,10 +10,15 @@ class BaseSiteService extends Event {
     this.categoryDataSource = new React.ListView.DataSource({rowHasChanged: this._rowHasChanged});
     this.categoryComicListDataSource = new React.ListView.DataSource({rowHasChanged: this._rowHasChanged});
     this.comicListDataSource = new React.ListView.DataSource({rowHasChanged: this._rowHasChanged});
+    this.searchDataSource = new React.ListView.DataSource({rowHasChanged: this._rowHasChanged});
     this.categoryComicList = [];
     this.comicList = [];
     this.imageList = [];
+    this.searchList = [];
     this.maxImageSize = Number.MAX_VALUE;
+  }
+
+  doSearch(keyword, pageIndex){
   }
 
   doCategory(url, pageIndex){
@@ -34,6 +39,10 @@ class BaseSiteService extends Event {
     }
   }
 
+  getSearchList() {
+    return this.searchDataSource.cloneWithRows(this.searchList);
+  }
+
   getCategoryComicList() {
     return this.categoryComicListDataSource.cloneWithRows(this.categoryComicList);
   }
@@ -44,6 +53,10 @@ class BaseSiteService extends Event {
 
   getComicList() {
     return this.comicListDataSource.cloneWithRows(this.comicList);
+  }
+
+  resetSearchList(){
+    this.searchList = [];
   }
 
   resetImageList() {

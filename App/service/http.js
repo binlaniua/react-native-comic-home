@@ -42,7 +42,7 @@ class HttpClient {
 
 		if (finalName) {
 			var result = [];
-			dom = dom.children;
+			dom = dom.length ? dom : dom.children;
 			for (var k = 0; k < dom.length; k++) {
 				if (dom[k].name && dom[k].name.toLowerCase() == finalName) {
 					result.push(dom[k]);

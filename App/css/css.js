@@ -52,6 +52,11 @@ var styles = React.StyleSheet.create({
     backgroundColor: '#00ff00'
   },
 
+  btn: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
   paddingLeft: {
     paddingLeft: 8,
     paddingBottom: 8,

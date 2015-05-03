@@ -1,5 +1,6 @@
 var React = require('react-native'),
   Route = require('../../route/route'),
+  SearchView = require('../../component/search_view'),
   Css = require('../../css/css');
 
 var {
@@ -8,6 +9,7 @@ var {
   ListView,
   View,
   Text,
+  TextInput,
   TouchableHighlight,
   AlertIOS
 } = React;
@@ -16,33 +18,60 @@ var {
 var CategoryComicListView = React.createClass({
 
   getInitialState() {
-    return {};
+    this.comicService = this.props.comicService;
+    this.keyword = '';
+    this.lastKeyword = null;
+    this.pageIndex = -1;
+    return {
+      dataSource: this.comicService.getSearchList()
+    };
   },
 
   componentDidMount() {
-
+    this.comicService.addListener('search', (data) => this._onSearchHandler(data));
   },
 
   componentWillUnmount() {
-
+    this.comicService.removeListener('search');
+    this.comicService.resetSearchList();
   },
 
   render() {
     return (
-      <View style={styles.listCell}>
-
-      </View>
+      <ListView
+        dataSource={this.state.dataSource}
+        renderRow={this._renderRow}
+        renderHeader={this._renderHeader}
+        renderFooter={this._renderFooter}
+        >
+      </ListView>
     );
   },
 
-  _loadMore() {
-    this.pageIndex++;
-    this.comicService.doCategory(this.props.url, this.pageIndex);
+  _loadMore(isMore, kk) {
+    if(kk){
+      this.keyword = kk;
+    }
+    if(this.keyword && (this.keyword != this.lastKeyword || isMore)){
+      if(this.keyword != this.lastKeyword){
+        this.comicService.resetSearchList();
+        this.pageIndex = -1;
+      }
+      this.pageIndex++;
+      this.lastKeyword = this.keyword;
+      this.comicService.doSearch(this.keyword, this.pageIndex);
+    }
+  },
+
+  _renderHeader(){
+    return (
+      <SearchView onSubmit={(text) => {this._loadMore(false, text)}}></SearchView>
+    )
   },
 
   _renderFooter(){
     return (
-      <TouchableHighlight underlayColor="#cff4ff" style={[styles.btnMore]} onPress={this._loadMore.bind(this)}>
+      <TouchableHighlight underlayColor="#cff4ff" style={[styles.btnMore]} onPress={() => {this._loadMore(true)}}>
         <Text style={styles.btnMoreText}>{'更多'}</Text>
       </TouchableHighlight>
     );
@@ -52,11 +81,7 @@ var CategoryComicListView = React.createClass({
     return (
       <View>
 
-        <View style={styles.listRow}>
-          {this._renderCell(rowData[0], true)}
-          <View style={Css.collectionSeparator}></View>
-          {this._renderCell(rowData[1], false)}
-        </View>
+        {this._renderCell(rowData)}
 
         <View style={Css.tableSeparator}></View>
       </View>
@@ -66,46 +91,49 @@ var CategoryComicListView = React.createClass({
   _renderCell(rowData, isLeft) {
     return (
       <View style={[styles.listCell]}>
-        <TouchableHighlight style={isLeft ? Css.paddingLeft : Css.paddingRight} underlayColor="#cff4ff" onPress={() => this._onCategoryPress(rowData)}>
-          <View>
-            <Image
-              resizeMode="stretch"
-              style={[styles.listCellImage]}
-              source={{uri: rowData.icon}}
-              />
+        <Image
+          resizeMode="stretch"
+          style={[styles.listCellImage]}
+          source={{uri: rowData.icon}}
+          />
 
-            <View style={[styles.listCellView]}>
-              <Text style={styles.listCellTxtBold}>
-                {rowData.title}
-              </Text>
-              <Text style={[styles.listCellTxt]}>
-                {rowData.count}
-              </Text>
-            </View>
+        <View style={[Css.flexColumn, {paddingLeft: 8}]}>
+          <Text style={styles.listCellTxtBold}>名称:{'    '}
+						<Text style={styles.listCellTxt}>{rowData.title}</Text>
+					</Text>
 
-            <View style={[styles.listCellView]}>
-              <Text style={styles.listCellTxt}>
-                {rowData.auth}
-              </Text>
-              <Text style={[styles.listCellTxt]}>
-                {rowData.updateTime}
-              </Text>
-            </View>
-          </View>
-        </TouchableHighlight>
+          <Text style={styles.listCellTxtBold}>分类:{'    '}
+						<Text style={styles.listCellTxt}>{rowData.category.title}</Text>
+					</Text>
 
+					<Text style={styles.listCellTxtBold}>作者:{'    '}
+						<Text style={styles.listCellTxt}>{rowData.auth}</Text>
+					</Text>
+
+					<Text style={styles.listCellTxtBold}>最新:{'    '}
+						<Text style={styles.listCellTxt}>{rowData.count}</Text>
+					</Text>
+
+          <Text style={styles.listCellTxtBold}>日期:{'    '}
+						<Text style={styles.listCellTxt}>{rowData.updateTime}</Text>
+					</Text>
+        </View>
       </View>
     );
   },
 
-  _onComicHandler(data) {
+  _onSearchHandler(data) {
     this.setState({
       dataSource: data
     });
   },
 
   _onCategoryPress(rowData) {
-    this.props.navigator.push(Route.ComicList(rowData, this.comicService));
+    //this.props.navigator.push(Route.ComicList(rowData, this.comicService));
+  },
+
+  _onComicPress(rowData){
+
   }
 
 });
@@ -125,26 +153,22 @@ var styles = StyleSheet.create({
   },
   listRow: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column'
   },
   listCell: {
     flex: 1,
-    flexDirection: 'column'
+    flexDirection: 'row',
+    padding: 8
   },
   listCellImage: {
-    flex: 1,
+    width: 150,
     height: 150
-  },
-  listCellView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: 4,
-    paddingBottom: 4
   },
   listCellTxtBold: {
     fontWeight: 'bold'
   },
   listCellTxt: {
+    fontWeight: 'normal'
   }
 });
 
