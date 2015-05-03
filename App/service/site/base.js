@@ -13,6 +13,7 @@ class BaseSiteService extends Event {
     this.categoryComicList = [];
     this.comicList = [];
     this.imageList = [];
+    this.maxImageSize = Number.MAX_VALUE;
   }
 
   doCategory(url, pageIndex){
@@ -27,6 +28,9 @@ class BaseSiteService extends Event {
   doImageList(url, pageIndex){
     if(pageIndex < this.imageList.length){
       return this.imageList[pageIndex];
+    }
+    else if(pageIndex > this.maxImageSize){
+      return -1;
     }
   }
 
@@ -44,6 +48,7 @@ class BaseSiteService extends Event {
 
   resetImageList() {
     this.imageList = [];
+    this.maxImageSize = Number.MAX_VALUE;
   }
 
   resetCategory() {

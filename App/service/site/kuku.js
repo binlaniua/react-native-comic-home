@@ -34,6 +34,17 @@ class ComicService extends BaseSiteService {
           }
         });
     }
+
+    if(this.maxImageSize == Number.MAX_VALUE){
+      this.maxImageSize--;
+      Http.getText(volUrl, {})
+        .then((h) => {
+          var m = /共(\d+)页/.exec(h);
+          if(m){
+            this.maxImageSize = parseInt(m[1]);
+          }
+        });
+    }
   }
 
   doCategory(url, pageIndex){

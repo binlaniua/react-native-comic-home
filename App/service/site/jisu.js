@@ -13,7 +13,8 @@ class ComicService extends BaseSiteService {
     pageIndex = pageIndex < 0 ? 0 : pageIndex;
     var imageUrl = super(volUrl, pageIndex);
     if(imageUrl){
-      this.emit('imageList', {i: pageIndex, u: imageUrl});
+      if(imageUrl != -1)
+        this.emit('imageList', {i: pageIndex, u: imageUrl});
     }
     else{
       var cid = /-(\d+)\/$/.exec(volUrl)[1],
@@ -31,6 +32,14 @@ class ComicService extends BaseSiteService {
             console.error(url + '读取失败');
           }
 
+        });
+    }
+
+    if(this.maxImageSize == Number.MAX_VALUE){
+      this.maxImageSize--;
+      Http.getSelect(volUrl, {}, 'html/body/div[3]:a')
+        .then((doms) => {
+          this.maxImageSize = parseInt(doms.pop().children[0].data);
         });
     }
   }
